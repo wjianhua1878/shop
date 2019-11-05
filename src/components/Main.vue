@@ -19,13 +19,19 @@
       </van-tabbar-item>
     </van-tabbar>
     <keep-alive>
-      <router-view v-if='$route.meta.keepAlive'/>
+      <router-view v-if='$route.meta.keepAlive' />
     </keep-alive>
-    <router-view v-if='!$route.meta.keepAlive'/>
+    <router-view v-if='!$route.meta.keepAlive' />
   </div>
 </template>
 
 <script>
+  import {
+    getGoodsCart
+  } from './../service/api/index.js'
+  import {
+    setStore
+  } from './../../config/global.js'
   export default {
     name: 'Main',
     data() {
@@ -63,7 +69,7 @@
           let num = 0;
           Object.values(this.$store.state.shopCart).forEach((goods, index) => {
             if (goods.selected) {
-            num += goods.count;
+              num += goods.count;
             }
           });
           return num;
@@ -73,15 +79,42 @@
       }
     },
 
-   mounted() {
-      // this.initCartData();
+    mounted() {
       this.$store.commit('initUserInfo');
-      this.$store.commit('initCart');
+      // this.$store.commit('initCart');
+      // console.log('mounted');
+      this.initShopCart();
+      // this.$store.commit('initCart');
     },
     methods: {
-     /* initCartData() {
-        this.$store.commit('initCart');
-      } */
+      async initShopCart() {
+        if (this.$store.state.userInfo.token) { //已经登录
+          //从服务器获取当前用户购物车中的数据
+          let result = await getGoodsCart(this.$store.state.userInfo.token);
+          console.log(result);
+          //如果获取成功
+          let shopCart = {};
+          if (result.success_code === 200) {
+            let cartArr = result.data;
+            //遍历
+            cartArr.forEach((value) => {
+              shopCart[value.goods_id] = {
+                'count': value.num,
+                'id': value.goods_id,
+                'name': value.goods_name,
+                'image': value.small_image,
+                'price': value.goods_price,
+                'selected': value.checked
+              }
+            });
+          }
+          //存入本地
+          setStore('shopCart', shopCart);
+          //初始化购物车，获取本地购物车数据
+          this.$store.commit('initCart');
+
+        }
+      }
     }
   }
 </script>

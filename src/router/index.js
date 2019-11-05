@@ -26,6 +26,7 @@ export default new Router({
       component:Main,
       meta:{keepAlive:true},
       children:[
+        // {path:'/main',redirect:'/main/home'},
         {path:'/main',redirect:'/main/home',meta:{keepAlive:true}},
         {path:'home',name:'home',component:Home,meta:{keepAlive:true}},
         // {path:'home',name:'home',component:Home},

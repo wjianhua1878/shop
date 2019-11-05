@@ -9,4 +9,5 @@ export default {
     syncUserInfo(context,userInfo){
       context.commit('setUserInfo',{userInfo});
     }
+	
 }

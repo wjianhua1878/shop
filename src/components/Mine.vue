@@ -59,6 +59,7 @@
           message: '确定要退出登录吗?'
         }).then(() => {
           this.$store.commit('clearUserInfo');
+          this.$store.commit('clearCart');
           // on confirm
         }).catch(() => {
           // on cancel

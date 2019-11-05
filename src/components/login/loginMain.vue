@@ -41,7 +41,7 @@
                 <input type="text" maxlength="11" placeholder="请输入用户名" v-model="userName">
               </section>
               <section class="login-verification">
-                <input type="password" maxlength="11" placeholder="请输入密码" v-model="userPwd"/>
+                <input type="password" maxlength="11" placeholder="请输入密码" v-model="userPwd" />
               </section>
 
               <section class="login-message">
@@ -76,15 +76,15 @@
         userInfo: {},
 
         //账号密码登录部分
-        userName:null,
-        userPwd:null,
-        captcha:null
+        userName: null,
+        userPwd: null,
+        captcha: null
 
       }
     },
     computed: {
       testPhoneNumRight() {
-        let reg = /^[1][1,3,5,7,8][0-9]{9}$/;
+        let reg = /^[1][3,5,7,8][0-9]{9}$/;
         return reg.test(this.phoneNum);
       }
     },
@@ -147,8 +147,9 @@
                 duration: 500
               });
               // console.log(this.userInfo);
-              this.$store.dispatch('syncUserInfo', this.userInfo)
-              this.$router.push('/main/mine');
+              this.$store.dispatch('syncUserInfo', this.userInfo);
+              // this.$router.push('/main');
+              this.$router.back();
             } else {
               this.$toast({
                 message: '验证码错误!',
@@ -157,28 +158,28 @@
             }
           }
         } else { //账号密码登录
-          if (!this.userName) {//没有输入用户名
+          if (!this.userName) { //没有输入用户名
             this.$toast({
               message: '请输入用户名!',
               duration: 500
             });
             return;
-          }else if(!this.userPwd){//没有输入密码
+          } else if (!this.userPwd) { //没有输入密码
             this.$toast({
               message: '请输入密码!',
               duration: 500
             });
             return;
-          }else if(!this.captcha){//没有输入验证码
+          } else if (!this.captcha) { //没有输入验证码
             this.$toast({
               message: '请输入验证码!',
               duration: 500
             });
             return;
-          }else{
-            let result = await pwdLogin(this.userName,this.userPwd,this.captcha);
+          } else {
+            let result = await pwdLogin(this.userName, this.userPwd, this.captcha);
             console.log(result);
-            if(result.success_code !==200){
+            if (result.success_code !== 200) {
               this.$toast({
                 message: '登录不了别试了!',
                 duration: 500

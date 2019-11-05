@@ -9,7 +9,9 @@
           <div class="product_name">{{product.product_name}}</div>
           <br>
           <div class="product_price"> {{product.price | moneyFormat}}</div>
-          <div class="cart" @click="addToCart(product)" ><van-icon name="shopping-cart-o" color="gray" size="1.8rem"/></div>
+          <div class="cart" @click="addToCart(product)">
+            <van-icon name="shopping-cart-o" color="gray" size="1.8rem" />
+          </div>
         </div>
       </div>
     </div>
@@ -18,14 +20,41 @@
 
 <script>
   import Pubsub from 'pubsub-js'
+  import {
+    addGoodsToCart
+  } from './../../service/api/index.js'
   export default {
     name: 'ProductGrid',
     props: {
       product_grid: Array
     },
-    methods:{
-      addToCart(goods){
-        Pubsub.publish('homeAddCart',goods);
+    methods: {
+      addToCart(goods) {
+        // Pubsub.publish('homeAddCart',goods);
+        if (this.$store.state.userInfo.token) { //已经登录
+          this.dealGoodsAdd(goods);
+        } else { //没有登录
+          this.$router.push('/loginMain');
+        }
+      },
+      async dealGoodsAdd(goods) {
+        let result = await addGoodsToCart(this.$store.state.userInfo.token, goods.id, goods.product_name, goods.price,
+          goods.small_image, );
+        console.log(result);
+        if (result.success_code === 200) {
+          this.$store.commit('addGoods', {
+            goodsId: goods.id,
+            goodsName: goods.product_name,
+            goodsImage: goods.small_image,
+            goodsPrice: goods.price
+          });
+          // console.log('okokokok');
+          this.$toast({
+            message: '加入购物车成功！',
+            duration: 1000,
+            closeOnClick: true
+          });
+        }
       }
     }
 
@@ -39,9 +68,9 @@
   }
 
   #title {
-   width: 100%;
+    width: 100%;
     height: 2rem;
-    color:gray;
+    color: gray;
     /* border-left: 4px #3cb963 solid; */
     /* background-color: white; */
     margin-top: 1rem;
@@ -77,7 +106,8 @@
     height: 9rem;
     width: 9rem;
   }
-  .product_price{
+
+  .product_price {
     height: 1.875rem;
     line-height: 1.875rem;
     font-size: 1rem;
@@ -89,7 +119,8 @@
     bottom: 2rem;
     left: 0;
   }
-  .cart{
+
+  .cart {
     /* border: 1px solid magenta; */
     /* background-color: #F5F5F5; */
     width: 2.5rem;
@@ -103,5 +134,4 @@
     right: 0.5rem;
     bottom: 1rem;
   }
-
 </style>

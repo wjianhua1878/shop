@@ -10,8 +10,8 @@
         <div class="info">{{product.spec}}</div>
         <div class="product_price"> {{product.price | moneyFormat}}</div>
         <div class="cart" @click="addToCart(product)">
-          <van-icon name="shopping-cart-o" color="gray" size="1.5rem"/>
-          </div>
+          <van-icon name="shopping-cart-o" color="gray" size="1.5rem" />
+        </div>
       </div>
     </div>
   </div>
@@ -19,6 +19,9 @@
 
 <script>
   import Pubsub from 'pubsub-js'
+  import {
+    addGoodsToCart
+  } from './../../service/api/index.js'
   export default {
     name: 'ProductDetail',
     props: {
@@ -27,21 +30,32 @@
       indexPro: Number
     },
     methods: {
-      addToCart(product) {
-        // Pubsub.publish('categoryAddCart', product);
-        this.$store.commit('addGoods',{
-           goodsId:product.id,
-           goodsName:product.product_name,
-           goodsImage:product.small_image,
-           goodsPrice:product.price
-         });
-         // console.log('okokokok');
-        this.$toast({
-          message:'加入购物车成功！',
-          duration:1000,
-          closeOnClick:true
-        });
-
+      addToCart(goods) {
+        // Pubsub.publish('homeAddCart',goods);
+        if (this.$store.state.userInfo.token) { //已经登录
+          this.dealGoodsAdd(goods);
+        } else { //没有登录
+          this.$router.push('/loginMain');
+        }
+      },
+      async dealGoodsAdd(goods) {
+        let result = await addGoodsToCart(this.$store.state.userInfo.token, goods.id, goods.product_name, goods.price,
+          goods.small_image, );
+        console.log(result);
+        if (result.success_code === 200) {
+          this.$store.commit('addGoods', {
+            goodsId: goods.id,
+            goodsName: goods.product_name,
+            goodsImage: goods.small_image,
+            goodsPrice: goods.price
+          });
+          // console.log('okokokok');
+          this.$toast({
+            message: '加入购物车成功！',
+            duration: 1000,
+            closeOnClick: true
+          });
+        }
       }
     }
   }
@@ -131,7 +145,7 @@
     left: 0;
   }
 
-  .cart{
+  .cart {
     /* border: 1px solid magenta; */
     /* background-color: #F5F5F5; */
     width: 2.5rem;
