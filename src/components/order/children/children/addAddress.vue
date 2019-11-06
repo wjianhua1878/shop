@@ -9,7 +9,6 @@
       show-search-result
       :search-result="searchResult"
       @save="onSave"
-      @change-detail="onChangeDetail"
     />
 
   </div>
@@ -18,11 +17,14 @@
 </template>
 
 <script>
+  import areaList from './../../../../../config/area.js'
+  import {addUserAddress} from './../../../../service/api/index.js'
+  import PubSub from 'pubsub-js'
   export default {
     name: 'AddressList',
     data() {
         return {
-          areaList:{},
+          areaList:areaList,
           searchResult: []
         }
       },
@@ -30,19 +32,22 @@
       onClickLeft() {
         this.$router.back();
       },
-      onSave() {
-            Toast('save');
-          },
-          onChangeDetail(val) {
-            if (val) {
-              this.searchResult = [{
-                name: '黄龙万科中心',
-                address: '杭州市西湖区'
-              }];
-            } else {
-              this.searchResult = [];
+     async onSave(data) {
+            // console.log(data);
+            let result = await addUserAddress(this.$store.state.userInfo.token, data.name, data.tel, data.province+data.city+data.county, data.addressDetail, data.postalCode, data.isDefault, data.province, data.city, data.county, data.areaCode);
+            // console.log(result);
+            if(result.success_code === 200){//成功
+              this.$toast({
+                message: '添加成功！',
+                duration: 500,
+                closeOnClick: true
+              });
+              //回到地址列表
+              this.$router.back();
+              //订阅发布  发布消息(在myAddress订阅)
+              PubSub.publish('backToMyAddress');
             }
-          }
+          },
     }
   }
 </script>

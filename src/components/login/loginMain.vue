@@ -181,7 +181,7 @@
             console.log(result);
             if (result.success_code !== 200) {
               this.$toast({
-                message: '登录不了别试了!',
+                message: '有点小错误!',
                 duration: 500
               });
             }

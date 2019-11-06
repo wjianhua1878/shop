@@ -22,6 +22,7 @@
       <router-view v-if='$route.meta.keepAlive' />
     </keep-alive>
     <router-view v-if='!$route.meta.keepAlive' />
+    <!-- <router-view/> -->
   </div>
 </template>
 
@@ -91,7 +92,7 @@
         if (this.$store.state.userInfo.token) { //已经登录
           //从服务器获取当前用户购物车中的数据
           let result = await getGoodsCart(this.$store.state.userInfo.token);
-          console.log(result);
+          // console.log(result);
           //如果获取成功
           let shopCart = {};
           if (result.success_code === 200) {

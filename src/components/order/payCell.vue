@@ -14,7 +14,7 @@
 
 
     <van-cell-group style="margin-top: 2rem;">
-      <van-cell title="支付方式" value="微信" is-link/>
+      <van-cell title="支付方式" value="微信" />
       <van-cell title="总额" :value="totalPrice | moneyFormat"  />
       <van-cell title="优惠" :value= "subPrice | moneyFormat"  />
     </van-cell-group>

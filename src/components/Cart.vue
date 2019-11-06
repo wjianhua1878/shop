@@ -59,14 +59,16 @@
   } from 'vant';
   import LoginMethods from './login/loginMethods'
   import {
-    getGoodsCart
+    getGoodsCart,
+    changeCartNum,
+    clearAllCart
   } from './../service/api/index.js'
   import {
     setStore
   } from './../../config/global.js'
   export default {
     name: 'Cart',
-    components:{
+    components: {
       LoginMethods
     },
     mounted() {
@@ -79,7 +81,7 @@
         if (this.$store.state.userInfo.token) { //已经登录
           //从服务器获取当前用户购物车中的数据
           let result = await getGoodsCart(this.$store.state.userInfo.token);
-          console.log(result);
+          // console.log(result);
           //如果获取成功
           let shopCart = {};
           if (result.success_code === 200) {
@@ -104,31 +106,64 @@
         }
       },
       //从购物车增加商品
-      addToCart(goodsId, goodsName, goodsImage, goodsPrice) {
-        this.$store.commit('addGoods', {
-          goodsId,
-          goodsName,
-          goodsImage,
-          goodsPrice
-        })
+      async addToCart(goodsId, goodsName, goodsImage, goodsPrice) {
+        let result = await changeCartNum(this.$store.state.userInfo.token, goodsId, 'add');
+        // console.log(result);
+        if (result.success_code === 200) { //修改成功
+          this.$store.commit('addGoods', {
+            goodsId,
+            goodsName,
+            goodsImage,
+            goodsPrice
+          })
+        } else {
+          this.$toast({
+            message: '有点小问题！',
+            duration: 500,
+            closeOnClick: true
+          });
+        }
+
       },
 
       //从购物车减少商品
-      subFromCart(goodsId, goodsCount) {
+      async subFromCart(goodsId, goodsCount) {
         if (goodsCount > 1) {
-          this.$store.commit('subCartGoods', {
-            goodsId
-          });
-        }
-        if (goodsCount === 1) {
-          Dialog.confirm({
-            title: '提示',
-            message: '确定要从购物车移除该商品吗?'
-          }).then(() => {
-            // on confirm
+          //服务器端减少商品
+          let result = await changeCartNum(this.$store.state.userInfo.token, goodsId, 'reduce');
+          // console.log(result);
+          if (result.success_code === 200) { //修改成功
             this.$store.commit('subCartGoods', {
               goodsId
             });
+          } else {
+            this.$toast({
+              message: '有点小问题！',
+              duration: 500,
+              closeOnClick: true
+            });
+          }
+
+        }
+        if (goodsCount === 1) { //删除前确认
+          Dialog.confirm({
+            title: '提示',
+            message: '确定要从购物车移除该商品吗?'
+          }).then(async () => {
+            // on confirm
+            let result = await changeCartNum(this.$store.state.userInfo.token, goodsId, 'reduce');
+            // console.log(result);
+            if (result.success_code === 200) { //修改成功
+              this.$store.commit('subCartGoods', {
+                goodsId
+              });
+            } else {
+              this.$toast({
+                message: '有点小问题！',
+                duration: 500,
+                closeOnClick: true
+              });
+            }
           }).catch(() => {
             // on cancel
           });
@@ -171,18 +206,28 @@
           Dialog.confirm({
             title: '提示',
             message: '确定要清空购物车吗?'
-          }).then(() => {
+          }).then(async () => {
             // on confirm
-            this.$store.commit('clearCart');
+            let result = await clearAllCart(this.$store.state.userInfo.token);
+            console.log(result);
+            if (result.success_code === 200) { //删除成功
+             this.$store.commit('clearCart');
+            } else {
+              this.$toast({
+                message: '有点小问题！',
+                duration: 500,
+                closeOnClick: true
+              });
+            }
           }).catch(() => {
             // on cancel
           });
         }
       },
-      toPay(){
-        if(this.$store.state.userInfo.token){
+      toPay() {
+        if (this.$store.state.userInfo.token) {
           this.$router.push('/confirmOrder');
-        }else{
+        } else {
           this.$router.push('/main/login');
         }
       }
