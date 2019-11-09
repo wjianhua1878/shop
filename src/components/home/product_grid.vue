@@ -40,7 +40,7 @@
       async dealGoodsAdd(goods) {
         let result = await addGoodsToCart(this.$store.state.userInfo.token, goods.id, goods.product_name, goods.price,
           goods.small_image, );
-        console.log(result);
+        // console.log(result);
         if (result.success_code === 200) {
           this.$store.commit('addGoods', {
             goodsId: goods.id,

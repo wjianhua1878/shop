@@ -46,6 +46,12 @@
               this.$router.back();
               //订阅发布  发布消息(在myAddress订阅)
               PubSub.publish('backToMyAddress');
+            }else{
+              this.$toast({
+                message: '有点小错误！',
+                duration: 500,
+                closeOnClick: true
+              });
             }
           },
     }

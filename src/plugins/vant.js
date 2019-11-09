@@ -61,3 +61,15 @@ Vue.use(AddressList);
 //地址编辑
 import { AddressEdit } from 'vant';
 Vue.use(AddressEdit)
+
+//时间选择组件
+import { DatetimePicker } from 'vant';
+Vue.use(DatetimePicker);
+
+//弹出层
+import { Popup } from 'vant';
+Vue.use(Popup)
+
+//标签页
+import { Tab, Tabs } from 'vant';
+Vue.use(Tab).use(Tabs);

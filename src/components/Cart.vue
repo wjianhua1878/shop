@@ -61,7 +61,9 @@
   import {
     getGoodsCart,
     changeCartNum,
-    clearAllCart
+    clearAllCart,
+    singerGoodsSelect,
+    allGoodsSelect
   } from './../service/api/index.js'
   import {
     setStore
@@ -187,21 +189,43 @@
       },
 
       //单个商品的选中和取消选中
-      single_goods_selected(goodsId) {
-        this.$store.commit('single_goods_selected', {
-          goodsId
-        });
+      async single_goods_selected(goodsId) {
+        let result = await singerGoodsSelect(this.$store.state.userInfo.token,goodsId);
+        // console.log(result);
+        if(result.success_code === 200){
+          this.$store.commit('single_goods_selected', {
+            goodsId
+          });
+        }else{
+          this.$toast({
+            message: '有点小问题！',
+            duration: 500,
+            closeOnClick: true
+          });
+        }
+
       },
 
       //全选和取消全选
-      all_goods_selected(isSelectAll) {
-        this.$store.commit('all_goods_selected', {
-          isSelectAll
-        });
+      async all_goods_selected(isSelectAll) {
+        let result = await allGoodsSelect(this.$store.state.userInfo.token,isSelectAll);
+        console.log(result);
+        if (result.success_code === 200){
+          this.$store.commit('all_goods_selected', {
+            isSelectAll
+          });
+        }else{
+          this.$toast({
+            message: '有点小问题！',
+            duration: 500,
+            closeOnClick: true
+          });
+        }
+
       },
 
       //清空购物车
-      clearCart() {
+      async clearCart() {
         if ((Object.values(this.$store.state.shopCart).length) > 0) {
           Dialog.confirm({
             title: '提示',

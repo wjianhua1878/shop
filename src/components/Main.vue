@@ -28,7 +28,8 @@
 
 <script>
   import {
-    getGoodsCart
+    getGoodsCart,
+    // getOrder1
   } from './../service/api/index.js'
   import {
     setStore
@@ -85,9 +86,14 @@
       // this.$store.commit('initCart');
       // console.log('mounted');
       this.initShopCart();
+      // this.getOrder11();
       // this.$store.commit('initCart');
     },
     methods: {
+     /* async getOrder11(){
+        let result = await getOrder1('sell',2);
+        console.log(result);
+      }, */
       async initShopCart() {
         if (this.$store.state.userInfo.token) { //已经登录
           //从服务器获取当前用户购物车中的数据

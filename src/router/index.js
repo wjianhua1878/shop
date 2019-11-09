@@ -6,6 +6,7 @@ import Main from './../components/Main'
 const Home = () => import('./../components/Home.vue');
 const Category = () => import('./../components/Category.vue');
 const Mine = () => import('./../components/Mine.vue');
+const MineOrder = () => import('./../components/mine/MineOrder.vue')
 const Cart = () => import('./../components/Cart.vue');
 
 import Order from './../components/Order'
@@ -59,7 +60,10 @@ export default new Router({
         {
           path: 'mine',
           name: 'mine',
-          component: Mine
+          component: Mine,
+          /* chilidren:[
+            {path:'mineOrder',name:'MineOrder',component:MineOrder}
+          ] */
         },
         {
           path: 'cart',
@@ -80,9 +84,16 @@ export default new Router({
         path: 'myAddress',
         component: MyAddress,
         name: 'myAddress',
-        children:[
-          {path:'editAddress',name:'editAddress',component:EditAddress},
-          {path:'addAddress',name:'addAddress',component:AddAddress},
+        children: [{
+            path: 'editAddress',
+            name: 'editAddress',
+            component: EditAddress
+          },
+          {
+            path: 'addAddress',
+            name: 'addAddress',
+            component: AddAddress
+          },
         ]
       }]
     },
@@ -104,6 +115,12 @@ export default new Router({
       path: '/loginMain',
       name: 'loginMain',
       component: loginMain
+    },
+    {
+      path: '/mineOrder',
+      name: 'MineOrder',
+      component: MineOrder
     }
+
   ],
 })

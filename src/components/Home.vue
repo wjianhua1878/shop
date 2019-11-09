@@ -17,7 +17,7 @@
 <script>
   import {
     getHomeData,
-    addGoodsToCart
+    addGoodsToCart,
   } from './../service/api/index.js'
   import Header from './home/header'
   import Swipe from './home/swipe'
@@ -41,7 +41,7 @@
     },
     created() {
       getHomeData().then(response => {
-        // console.log(response);
+        console.log(response);
         this.img_list = response.data.list[0].icon_list;
         this.img_grid = response.data.list[2].icon_list;
         //限时抢购
@@ -54,6 +54,7 @@
         console.log(err);
       })
     },
+  
  /*   mounted() {
       Pubsub.subscribe('homeAddCart', (msg, goods) => {
         if (msg === 'homeAddCart') {

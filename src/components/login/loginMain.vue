@@ -62,8 +62,10 @@
   import {
     getPhoneCode,
     phoneCodeLogin,
-    pwdLogin
+    pwdLogin,
+    getGoodsCart
   } from './../../service/api/index.js'
+  import {setStore} from './../../../config/global.js'
   export default {
     name: 'loginMain',
     data() {
@@ -148,6 +150,7 @@
               });
               // console.log(this.userInfo);
               this.$store.dispatch('syncUserInfo', this.userInfo);
+              this.initShopCart();
               // this.$router.push('/main');
               this.$router.back();
             } else {
@@ -193,7 +196,35 @@
       //获取图形验证码
       getCaptcha() {
         this.$set(this.$refs.captcha, 'src', 'http://demo.itlike.com/web/xlmc/api/captcha?time=' + new Date());
-      }
+      },
+      async initShopCart() {
+        if (this.$store.state.userInfo.token) { //已经登录
+          //从服务器获取当前用户购物车中的数据
+          let result = await getGoodsCart(this.$store.state.userInfo.token);
+          // console.log(result);
+          //如果获取成功
+          let shopCart = {};
+          if (result.success_code === 200) {
+            let cartArr = result.data;
+            //遍历
+            cartArr.forEach((value) => {
+              shopCart[value.goods_id] = {
+                'count': value.num,
+                'id': value.goods_id,
+                'name': value.goods_name,
+                'image': value.small_image,
+                'price': value.goods_price,
+                'selected': value.checked
+              }
+            });
+          }
+          //存入本地
+          setStore('shopCart', shopCart);
+          //初始化购物车，获取本地购物车数据
+          this.$store.commit('initCart');
+
+        }
+      },
     }
   }
 </script>

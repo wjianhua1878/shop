@@ -30,9 +30,9 @@
       }
     },
     mounted() {
-      // console.log('myAddress mounted');
+      console.log('myAddress mounted');
       this.initUserAddress();
-      //订阅(从addAddress来)
+      //订阅(从addAddress,editAddress来)
       PubSub.subscribe('backToMyAddress', (msg) => {
         if (msg === 'backToMyAddress') {
           this.initUserAddress();
@@ -68,10 +68,15 @@
       //获取当前用户地址列表
       async initUserAddress() {
         if (this.$store.state.userInfo.token) { //已经登录
+        //从服务器获取当前用户的地址列表
           let result = await getUserAddress(this.$store.state.userInfo.token);
           // console.log(result);
           if (result.success_code === 200) { //成功
             let addressArr = result.data;
+            
+            //不加这句地址会重复出现
+            this.list = [];
+            
             addressArr.forEach((data, index) => {
               let addressObj = {
                 id: String(index + 1),

@@ -19,9 +19,9 @@
     </van-cell-group>
 
     <van-cell-group >
-      <van-cell icon="balance-list" title="我的订单" value="查看所有订单" is-link/>
-      <van-grid>
-        <van-grid-item :icon="item.icon" :text="item.text" v-for="(item,index) in gridItem" :key='index'/>
+      <van-cell icon="balance-list" title="我的订单" value="查看所有订单" @click="toMineOrder" is-link/>
+      <van-grid >
+        <van-grid-item @click='toMineOrder' :icon="item.icon" :text="item.text" v-for="(item,index) in gridItem" :key='index'/>
       </van-grid>
     </van-cell-group>
 
@@ -39,7 +39,7 @@
       <van-cell title="帮助" value="查看更多帮助" is-link/>
     </van-cell-group>
 
-
+            <router-view></router-view>
   </div>
 <LoginMethods v-else></LoginMethods>
 </template>
@@ -53,7 +53,7 @@
   export default {
     name: 'Mine',
     methods:{
-       async onClickRight(){
+        onClickRight(){
         Dialog.confirm({
           title: '提示',
           message: '确定要退出登录吗?'
@@ -64,6 +64,9 @@
         }).catch(() => {
           // on cancel
         });
+      },
+      toMineOrder(){
+        this.$router.push({path: '/mineOrder'})
       }
     },
     components:{

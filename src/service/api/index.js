@@ -27,7 +27,14 @@ export const getGoodsCart = (user_id) => ajax('http://demo.itlike.com/web/xlmc/a
 export const changeCartNum = (user_id, goods_id, type)=>ajax('http://demo.itlike.com/web/xlmc/api/cart/num', {user_id, goods_id, type}, 'POST');
 //删除当前用户购物车中所有的商品
 export const clearAllCart = (user_id) => ajax('http://demo.itlike.com/web/xlmc/api/cart/clear/'+ user_id);
-
+//单个商品的选中和取消选中
+export const singerGoodsSelect = (user_id, goods_id)=>ajax('http://demo.itlike.com/web/xlmc/api/cart/singer_select', {user_id, goods_id}, 'POST');
+//所有商品的选中和取消选中
+export const allGoodsSelect = (user_id, flag)=>ajax('http://demo.itlike.com/web/xlmc/api/cart/all_select', {user_id, flag}, 'POST');
+//查询所有被选中的商品
+export const getAllSelectedGoods = (user_id) => ajax('http://demo.itlike.com/web/xlmc/api/cart/selected/'+ user_id);
+//删除已经生成订单的商品
+export const delAllSelectedGoods = (user_id) => ajax('http://demo.itlike.com/web/xlmc/api/cart/del_checked/'+ user_id);
 
 
 //地址
@@ -41,3 +48,13 @@ export const changeUserAddress = ( address_id, user_id, address_name, address_ph
 export const delUserAddress = (address_id) => ajax('http://demo.itlike.com/web/xlmc/api/address/del/'+ address_id);
 //获取单条地址 post
 export const getCurrentUserAddress = ( user_id, address_id)=>ajax('http://demo.itlike.com/web/xlmc/api/address/one', {user_id, address_id}, 'POST');
+
+
+//提交订单接口
+//创建新订单
+export const postOrder = ( user_id, address_id, arrive_time, cart_shop, notice = '', shop_price, dis_price = 0)=>ajax('http://demo.itlike.com/web/xlmc/api/order/post', {user_id, address_id, arrive_time, cart_shop, notice, shop_price, dis_price}, 'POST');
+//订单支付成功
+export const orderPaySuccess = (user_id, order_id)=>ajax('http://demo.itlike.com/web/xlmc/api/order/change_status', {user_id, order_id}, 'POST');
+//查询订单  statue: ''为全部订单  will:待支付  pay:待收货(已支付)
+export const getOrder = (user_id, status)=>ajax('http://demo.itlike.com/web/xlmc/api/order/get', {user_id, status}, 'POST'); // pay will
+// export const getOrder1 = (type,page)=>ajax('http://106.54.54.237:8000/api/v1/home/data',{type,page}); // pay will
